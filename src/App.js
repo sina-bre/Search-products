@@ -3,6 +3,7 @@ import Modal from "./Modal";
 
 const App = () => {
   const [products, setProducts] = useState([]);
+  const [serchedProducts, setSearchedProducts] = useState([]);
   const [searchField, setSearchField] = useState("");
   const [index, setIndex] = useState(1);
   const [isOpen, setIsOpen] = useState(false);
@@ -12,6 +13,14 @@ const App = () => {
       .then((res) => {
         console.log(res.products);
         setProducts(res.products);
+      });
+  };
+  const searchAPI = (search) => {
+    fetch(`https://dummyjson.com/products/search?q=${search}`)
+      .then((res) => res.json())
+      .then((res) => {
+        console.log(res.products);
+        setSearchedProducts(res.products);
       });
   };
   // const fetchAPI2 = () => {
@@ -29,13 +38,15 @@ const App = () => {
     setIsOpen(false);
   };
 
-  const filteredProducts = products.filter((product) => {
-    return product.title.toLocaleLowerCase().includes(searchField);
-  });
+  // const filteredProducts = products.filter((product) => {
+  //   return product.title.toLocaleLowerCase().includes(searchField);
+  // });
   useEffect(() => {
     fetchAPI();
   }, []);
-
+  useEffect(() => {
+    searchAPI(searchField);
+  }, [searchField]);
   return (
     <div>
       <div
@@ -65,16 +76,16 @@ const App = () => {
             gap: "2rem",
           }}
         >
-          {filteredProducts.map((product, index) => (
+          {serchedProducts.map((product, index) => (
             <div>
               <div
                 style={{
-                  backgroundImage: `url(${product.images[0]})`,
+                  backgroundImage: `url(${product.thumbnail})`,
                   width: "400px",
                   height: "200px",
                   backgroundPosition: "center",
-                  backgroundRepeat: "no-repeat",
-                  backgroundSize: "contain",
+                  backgroundRepeat: "repeat",
+                  backgroundSize: "cover",
                   border: "2px solid black",
                 }}
               ></div>
